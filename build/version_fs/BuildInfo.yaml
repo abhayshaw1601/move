@@ -9,13 +9,13 @@ compiled_package_info:
     version_fs: "0000000000000000000000000000000000000000000000000000000000000000"
   source_digest: 377709E59EC5FF5FCAF5F5F729A4756D58083ED45564E266D6D7DF351343E81A
   build_flags:
-    dev_mode: true
-    test_mode: true
+    dev_mode: false
+    test_mode: false
     generate_docs: false
     save_disassembly: false
     install_dir: ~
     force_recompilation: false
-    lock_file: ~
+    lock_file: ".\\Move.lock"
     fetch_deps_only: false
     skip_fetch_latest_git_deps: false
     default_flavor: sui
