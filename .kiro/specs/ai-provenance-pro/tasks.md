@@ -280,6 +280,7 @@
   - **Validates: Requirements 3.4**
 
 - [x] 16. Implement storefront command
+
 - [x] 16.1 Create storefront command handler
 
   - Query all repositories from blockchain
@@ -295,11 +296,16 @@
   - **Validates: Requirements 6.2**
 
 - [x] 16.3 Write property test for shard size calculation
+
   - **Property 15: Shard Size Calculation**
   - **Validates: Requirements 6.3**
 
-- [ ] 17. Implement pull command with payment
-- [ ] 17.1 Create pull command handler
+- [x] 17. Implement pull command with payment
+
+- [x] 17.1 Create pull command handler
+
+
+
   - Query repository to check price
   - If premium, generate and display payment QR code
   - Submit buy_access transaction
@@ -308,12 +314,17 @@
   - Reassemble and save to output directory
   - _Requirements: 4.2, 4.3, 4.4, 4.5, 7.3, 7.4_
 
-- [ ] 17.2 Write property test for premium access control
+- [x] 17.2 Write property test for premium access control
+
+
   - **Property 9: Premium Access Control**
   - **Validates: Requirements 4.2**
 
-- [ ] 18. Implement inspect command
-- [ ] 18.1 Create inspect command handler
+- [x] 18. Implement inspect command
+
+- [x] 18.1 Create inspect command handler
+
+
   - Query repository metadata
   - Recursively query all dependencies
   - Build dependency graph structure
@@ -321,12 +332,17 @@
   - Display repository details (owner, trust score, price)
   - _Requirements: 5.3, 5.4, 5.5_
 
-- [ ] 18.2 Write property test for dependency query
+
+- [x] 18.2 Write property test for dependency query
+
   - **Property 13: Dependency Query Completeness**
   - **Validates: Requirements 5.5**
 
-- [ ] 19. Implement verify command
-- [ ] 19.1 Create verify command handler
+- [x] 19. Implement verify command
+
+- [x] 19.1 Create verify command handler
+
+
   - Generate Ed25519 signature using @noble/ed25519
   - Create payload: SHA256(repo_id + version_id + timestamp)
   - Sign payload with ephemeral keypair
@@ -337,5 +353,7 @@
   - Open HTML file in default browser
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 20. Final checkpoint - Ensure all tests pass
+
+- [x] 20. Final checkpoint - Ensure all tests pass
+
   - Ensure all tests pass, ask the user if questions arise.

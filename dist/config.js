@@ -41,7 +41,7 @@ const os = __importStar(require("os"));
 const path = __importStar(require("path"));
 const DEFAULT_CONFIG = {
     sui_rpc: "https://fullnode.testnet.sui.io:443",
-    walrus_api: "https://walrus-testnet.mystenlabs.com",
+    walrus_api: "https://publisher.walrus-testnet.walrus.space", // Updated Walrus endpoint
     default_shard_size: 104857600, // 100MB
     max_concurrent_uploads: 5,
     wallet_address: "0x..."

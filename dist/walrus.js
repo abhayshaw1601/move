@@ -32,18 +32,123 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.walrusService = exports.WalrusService = void 0;
 exports.uploadShards = uploadShards;
 exports.downloadShards = downloadShards;
+exports.uploadToWalrus = uploadToWalrus;
+exports.fetchFromWalrus = fetchFromWalrus;
 const fs = __importStar(require("fs"));
 const crypto = __importStar(require("crypto"));
 const path = __importStar(require("path"));
-const axios_1 = __importDefault(require("axios"));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cliProgress = require("cli-progress");
+/**
+ * Walrus Storage Service
+ * Handles file upload and download to/from Walrus decentralized storage
+ */
+const WALRUS_PUBLISHER = "https://publisher.walrus-testnet.walrus.space";
+const WALRUS_AGGREGATOR = "https://aggregator.walrus-testnet.walrus.space";
+class WalrusService {
+    constructor(publisherUrl = WALRUS_PUBLISHER, aggregatorUrl = WALRUS_AGGREGATOR) {
+        this.publisherUrl = publisherUrl;
+        this.aggregatorUrl = aggregatorUrl;
+    }
+    /**
+     * Upload a file to Walrus
+     * @param data - File data (Uint8Array, Blob, or string)
+     * @param epochs - Number of epochs to store (default: 3)
+     * @returns Blob ID
+     */
+    async uploadFile(data, epochs = 3) {
+        try {
+            let blob;
+            if (typeof data === "string") {
+                blob = new Blob([new TextEncoder().encode(data)]);
+            }
+            else if (data instanceof Uint8Array) {
+                blob = new Blob([data]);
+            }
+            else {
+                blob = data;
+            }
+            console.log(`📤 Uploading ${blob.size} bytes to Walrus...`);
+            const response = await fetch(`${this.publisherUrl}/v1/blobs?epochs=${epochs}`, {
+                method: "PUT",
+                body: blob,
+                headers: {
+                    "Content-Type": "application/octet-stream",
+                },
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Upload failed: ${response.status} - ${errorText}`);
+            }
+            const result = (await response.json());
+            let blobId;
+            if (result.newlyCreated) {
+                blobId = result.newlyCreated.blobObject.blobId;
+                console.log("✅ File uploaded successfully!");
+                console.log(`📦 Blob ID: ${blobId}`);
+                console.log(`💰 Cost: ${result.newlyCreated.cost} MIST`);
+            }
+            else if (result.alreadyCertified) {
+                blobId = result.alreadyCertified.blobId;
+                console.log("✅ File already exists on Walrus!");
+                console.log(`📦 Blob ID: ${blobId}`);
+            }
+            else {
+                throw new Error("Unexpected response format");
+            }
+            return blobId;
+        }
+        catch (error) {
+            console.error("❌ Upload error:", error);
+            throw error;
+        }
+    }
+    /**
+     * Download a file from Walrus
+     * @param blobId - The blob ID to download
+     * @returns File data as Uint8Array
+     */
+    async downloadFile(blobId) {
+        try {
+            console.log(`📥 Downloading blob: ${blobId}`);
+            const response = await fetch(`${this.aggregatorUrl}/v1/blobs/${blobId}`);
+            if (!response.ok) {
+                throw new Error(`Download failed: ${response.status} - ${response.statusText}`);
+            }
+            const arrayBuffer = await response.arrayBuffer();
+            const data = new Uint8Array(arrayBuffer);
+            console.log(`✅ Downloaded ${data.length} bytes`);
+            return data;
+        }
+        catch (error) {
+            console.error("❌ Download error:", error);
+            throw error;
+        }
+    }
+    /**
+     * Check if a blob exists on Walrus
+     * @param blobId - The blob ID to check
+     * @returns true if exists, false otherwise
+     */
+    async blobExists(blobId) {
+        try {
+            const response = await fetch(`${this.aggregatorUrl}/v1/blobs/${blobId}`, {
+                method: "HEAD",
+            });
+            return response.ok;
+        }
+        catch {
+            return false;
+        }
+    }
+}
+exports.WalrusService = WalrusService;
+// Export singleton instance
+exports.walrusService = new WalrusService();
 async function sha256Stream(stream) {
     const hash = crypto.createHash("sha256");
     return new Promise((resolve, reject) => {
@@ -58,6 +163,7 @@ async function uploadShards(filePath, config) {
     const totalShards = Math.max(1, Math.ceil(stat.size / shardSize));
     const results = [];
     const tasks = [];
+    const walrus = new WalrusService();
     for (let i = 0; i < totalShards; i++) {
         const start = i * shardSize;
         const end = Math.min(stat.size, start + shardSize) - 1;
@@ -75,10 +181,8 @@ async function uploadShards(filePath, config) {
             });
             const sha256 = hash.digest("hex");
             const buffer = Buffer.concat(chunks);
-            const resp = await axios_1.default.post(`${config.walrus_api}/v1/blobs`, buffer, {
-                headers: { "Content-Type": "application/octet-stream" }
-            });
-            const blobId = resp.data.id ?? resp.data.blobId ?? resp.data.digest ?? "";
+            // Use the new WalrusService
+            const blobId = await walrus.uploadFile(new Uint8Array(buffer), 5);
             results.push({
                 index: i,
                 blobId,
@@ -116,32 +220,24 @@ async function downloadShards(shards, outputPath, config) {
         hideCursor: true
     }, cliProgress.Presets.shades_grey);
     const fileStream = fs.createWriteStream(outputPath);
+    const walrus = new WalrusService();
     try {
         const maxConcurrent = config.max_concurrent_uploads ?? 5;
         const tasks = [];
         for (const shard of shards) {
             tasks.push(async () => {
                 const bar = progress.create(shard.sizeBytes, 0, { shard: shard.index });
-                const resp = await axios_1.default.get(`${config.walrus_api}/v1/blobs/${shard.blobId}`, {
-                    responseType: "stream"
-                });
-                const hash = crypto.createHash("sha256");
-                const chunks = [];
-                await new Promise((resolve, reject) => {
-                    resp.data.on("data", (chunk) => {
-                        hash.update(chunk);
-                        chunks.push(chunk);
-                        bar.increment(chunk.length);
-                    });
-                    resp.data.on("error", reject);
-                    resp.data.on("end", () => resolve());
-                });
+                // Use the new WalrusService
+                const data = await walrus.downloadFile(shard.blobId);
+                bar.increment(data.length);
                 bar.stop();
+                const hash = crypto.createHash("sha256");
+                hash.update(data);
                 const sha256 = hash.digest("hex");
                 if (shard.sha256 && shard.sha256 !== sha256) {
                     throw new Error(`SHA256 mismatch for shard ${shard.index}`);
                 }
-                return Buffer.concat(chunks);
+                return Buffer.from(data);
             });
         }
         // Concurrency control
@@ -175,4 +271,12 @@ async function downloadShards(shards, outputPath, config) {
         progress.stop();
         fileStream.end();
     }
+}
+// Convenience functions using the WalrusService
+async function uploadToWalrus(file) {
+    return exports.walrusService.uploadFile(file, 5);
+}
+async function fetchFromWalrus(blobId) {
+    const data = await exports.walrusService.downloadFile(blobId);
+    return new TextDecoder().decode(data);
 }

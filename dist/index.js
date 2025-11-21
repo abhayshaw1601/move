@@ -56,12 +56,12 @@ async function prompt(question) {
 }
 program
     .name("provenance")
-    .description("ProvenancePro CLI - AI model provenance and marketplace")
+    .description("ProvenancePro CLI - AI Model Provenance and Marketplace Platform")
     .version("0.1.0")
-    .option("-c, --config <path>", "Path to config file (default: ~/.provenance/config.json)");
+    .option("-c, --config <path>", "Configuration file path (default: ~/.provenance/config.json)");
 program
     .command("commit")
-    .description("Commit a new model version with metrics and shards")
+    .description("Commit AI model version with metrics to blockchain")
     .requiredOption("--repo <id>", "Repository object ID")
     .requiredOption("--cap <id>", "RepoCap object ID for this repository")
     .requiredOption("--branch <name>", "Branch name (e.g. main)")
@@ -149,7 +149,7 @@ program
 });
 program
     .command("log")
-    .description("Show repository history")
+    .description("Display repository version history and metrics")
     .requiredOption("--repo-name <name>", "Repository (model) name to display")
     .action(async (cmd) => {
     const globalOpts = program.opts();
@@ -180,52 +180,30 @@ program
 });
 program
     .command("audit-report")
-    .description("Generate HTML audit report")
-    .requiredOption("--repo-name <name>", "Repository (model) name")
-    .option("--output <path>", "Output HTML file path", "audit-report.html")
+    .description("Generate comprehensive audit report with performance analytics")
+    .requiredOption("--repo <id>", "Repository object ID to audit")
     .action(async (cmd) => {
     const globalOpts = program.opts();
     const cfg = await (0, config_1.loadConfig)(globalOpts.config);
     const opts = cmd.opts();
-    const { renderAuditReportHtml } = await Promise.resolve().then(() => __importStar(require("./audit")));
-    // TODO: Replace with real Sui + Walrus data. For now, use sample versions
-    // to exercise HTML generation.
-    const versions = [
-        {
-            versionId: "v1",
-            timestampMs: Date.now() - 3600000,
-            message: "Initial training run",
-            metrics: { Accuracy: "92.1", Loss: "0.15" },
-            shardCount: 2,
-            totalSizeBytes: 1200000000,
-            fileName: "model_v1.py",
-            oldText: "epochs = 50\nlearning_rate = 0.001",
-            newText: "epochs = 75\nlearning_rate = 0.001",
-        },
-        {
-            versionId: "v2",
-            timestampMs: Date.now() - 1800000,
-            message: "Improved accuracy",
-            metrics: { Accuracy: "95.0", Loss: "0.10" },
-            shardCount: 3,
-            totalSizeBytes: 1800000000,
-            fileName: "model_v2.py",
-            oldText: "epochs = 75\nlearning_rate = 0.001",
-            newText: "epochs = 100\nlearning_rate = 0.0005",
-        },
-    ];
-    const html = renderAuditReportHtml({
-        repoName: opts.repoName,
-        trustScore: 0,
-        versions,
-    });
-    const fs = await Promise.resolve().then(() => __importStar(require("fs")));
-    await fs.promises.writeFile(opts.output, html, "utf8");
-    console.log("📄 Audit report written to", opts.output);
+    const auditMod = await Promise.resolve().then(() => __importStar(require("./commands/audit-report")));
+    const { executeAuditReport } = auditMod;
+    const client = (0, sui_1.getSuiClient)(cfg);
+    try {
+        await executeAuditReport({
+            repoId: opts.repo,
+            client,
+            config: cfg
+        });
+    }
+    catch (error) {
+        console.error(`❌ Quantum audit failed: ${error}`);
+        process.exit(1);
+    }
 });
 program
     .command("storefront")
-    .description("Browse model marketplace")
+    .description("Browse AI model marketplace and repository listings")
     .action(async () => {
     const globalOpts = program.opts();
     const cfg = await (0, config_1.loadConfig)(globalOpts.config);
@@ -252,27 +230,85 @@ program
 });
 program
     .command("pull")
-    .description("Pull a model (with payment if needed) (stub)")
-    .action(async () => {
-    const opts = program.opts();
-    const config = await (0, config_1.loadConfig)(opts.config);
-    console.log("[stub] pull using config", config.sui_rpc);
+    .description("Download AI model with payment processing if required")
+    .requiredOption("--repo <id>", "Repository object ID to extract from")
+    .requiredOption("--output <dir>", "Output directory to materialize the model")
+    .action(async (cmd) => {
+    const globalOpts = program.opts();
+    const cfg = await (0, config_1.loadConfig)(globalOpts.config);
+    const opts = cmd.opts();
+    const pullMod = await Promise.resolve().then(() => __importStar(require("./commands/pull")));
+    const { executePull } = pullMod;
+    const pkg = (0, sui_1.getPackageId)();
+    const client = (0, sui_1.getSuiClient)(cfg);
+    const keypair = (0, sui_1.getKeypairFromEnv)();
+    try {
+        await executePull({
+            repoId: opts.repo,
+            outputDir: opts.output,
+            config: cfg,
+            client,
+            keypair,
+            packageId: pkg
+        });
+    }
+    catch (error) {
+        console.error(`❌ Neural extraction failed: ${error}`);
+        process.exit(1);
+    }
 });
 program
     .command("inspect")
-    .description("Inspect repository lineage (stub)")
-    .action(async () => {
-    const opts = program.opts();
-    const config = await (0, config_1.loadConfig)(opts.config);
-    console.log("[stub] inspect using config", config.sui_rpc);
+    .description("Analyze repository dependencies and lineage")
+    .requiredOption("--repo <id>", "Repository object ID to inspect")
+    .option("--max-depth <num>", "Maximum dependency depth to traverse", "5")
+    .action(async (cmd) => {
+    const globalOpts = program.opts();
+    const cfg = await (0, config_1.loadConfig)(globalOpts.config);
+    const opts = cmd.opts();
+    const inspectMod = await Promise.resolve().then(() => __importStar(require("./inspect")));
+    const { inspectRepository } = inspectMod;
+    const client = (0, sui_1.getSuiClient)(cfg);
+    await inspectRepository({
+        repoId: opts.repo,
+        client,
+        maxDepth: parseInt(opts.maxDepth)
+    });
 });
 program
     .command("verify")
-    .description("Run TEE-style verification (stub)")
-    .action(async () => {
-    const opts = program.opts();
-    const config = await (0, config_1.loadConfig)(opts.config);
-    console.log("[stub] verify using config", config.sui_rpc);
+    .description("Execute TEE verification and generate trust score")
+    .requiredOption("--repo <id>", "Repository object ID to verify")
+    .option("--version <id>", "Specific version ID to verify (defaults to latest)")
+    .action(async (cmd) => {
+    const globalOpts = program.opts();
+    const cfg = await (0, config_1.loadConfig)(globalOpts.config);
+    const opts = cmd.opts();
+    const verifyMod = await Promise.resolve().then(() => __importStar(require("./verify")));
+    const { verifyRepository } = verifyMod;
+    const pkg = (0, sui_1.getPackageId)();
+    const client = (0, sui_1.getSuiClient)(cfg);
+    const keypair = (0, sui_1.getKeypairFromEnv)();
+    try {
+        const result = await verifyRepository({
+            repoId: opts.repo,
+            versionId: opts.version,
+            client,
+            keypair,
+            packageId: pkg,
+            config: cfg
+        });
+        console.log("\n✅ Verification Complete!");
+        console.log(`   Transaction: ${result.transactionDigest}`);
+        console.log(`   New Trust Score: ${result.newTrustScore}`);
+        if (result.auditReportPath) {
+            console.log(`   Audit Report: ${result.auditReportPath}`);
+        }
+    }
+    catch (error) {
+        console.error(`❌ Verification failed: ${error}`);
+        process.exit(1);
+    }
 });
 (async () => {
     await (0, config_1.ensureConfigFile)(program.opts().config);
