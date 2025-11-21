@@ -4,5 +4,11 @@
   "deployerAddress": "0xaedc8923f06ab9e677377bfbebc527d806dd59a6f987555b6b192632d7f750cb",
   "transactionDigest": "EAeLybL7uGueBYhUsQZQ81eLaEbmuAgkh7RPEWwWNy7B",
   "deployedAt": "2025-11-20T15:11:48.988Z",
-  "explorerUrl": "https://suiexplorer.com/txblock/EAeLybL7uGueBYhUsQZQ81eLaEbmuAgkh7RPEWwWNy7B?network=testnet"
+  "explorerUrl": "https://suiexplorer.com/txblock/EAeLybL7uGueBYhUsQZQ81eLaEbmuAgkh7RPEWwWNy7B?network=testnet",
+  "repositories": {
+    "free": "0xbbb62e36d312b5d3191c2e828e071e64f859fc36507f01f84e4ac443fcf46121",
+    "paid": "0x87b3d03e330652bfe61386042c0cb789a439fdb8a4159dbea14b216ceba81028",
+    "gold": "0x87b3d03e330652bfe61386042c0cb789a439fdb8a4159dbea14b216ceba81028",
+    "forked": "0x771078fdad17362a452ecf02a3a479e2cc829cfad1be447ddc319f952b81fbf6"
+  }
 }

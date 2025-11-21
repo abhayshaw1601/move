@@ -1,0 +1,107 @@
+{
+  "model_name": "SentimentAnalyzer-v2.1",
+  "architecture": "BERT-Base-Uncased",
+  "framework": "PyTorch 2.0",
+  "task": "Sentiment Analysis",
+  "dataset": "IMDB Reviews + Custom Data",
+  "training_config": {
+    "optimizer": "AdamW",
+    "learning_rate": 2e-5,
+    "batch_size": 32,
+    "epochs": 150,
+    "warmup_steps": 500,
+    "weight_decay": 0.01,
+    "max_seq_length": 512
+  },
+  "performance_metrics": {
+    "accuracy": 97.5,
+    "precision": 0.97,
+    "recall": 0.95,
+    "f1_score": 0.96,
+    "loss": 0.08,
+    "validation_accuracy": 96.8,
+    "test_accuracy": 97.2
+  },
+  "model_architecture": {
+    "layers": [
+      {
+        "type": "Embedding",
+        "vocab_size": 30522,
+        "hidden_size": 768,
+        "parameters": 23440896
+      },
+      {
+        "type": "TransformerEncoder",
+        "num_layers": 12,
+        "num_attention_heads": 12,
+        "intermediate_size": 3072,
+        "parameters": 85054464
+      },
+      {
+        "type": "Pooler",
+        "hidden_size": 768,
+        "parameters": 590592
+      },
+      {
+        "type": "Classifier",
+        "num_labels": 3,
+        "hidden_size": 768,
+        "parameters": 2307
+      }
+    ],
+    "total_parameters": 109088259,
+    "trainable_parameters": 109088259
+  },
+  "sample_weights": {
+    "layer_0_weights": [0.0234, -0.0156, 0.0089, -0.0234, 0.0156, -0.0089, 0.0234, -0.0156],
+    "layer_0_bias": [0.001, -0.002, 0.003, -0.001, 0.002, -0.003, 0.001, -0.002],
+    "layer_1_weights": [0.0456, -0.0312, 0.0178, -0.0456, 0.0312, -0.0178, 0.0456, -0.0312],
+    "layer_1_bias": [0.002, -0.004, 0.006, -0.002, 0.004, -0.006, 0.002, -0.004],
+    "attention_weights": [0.0789, -0.0523, 0.0298, -0.0789, 0.0523, -0.0298, 0.0789, -0.0523],
+    "output_weights": [0.1234, -0.0823, 0.0469, -0.1234, 0.0823, -0.0469, 0.1234, -0.0823]
+  },
+  "training_history": {
+    "epoch_1": {"loss": 0.45, "accuracy": 85.2, "val_loss": 0.48, "val_accuracy": 84.5},
+    "epoch_50": {"loss": 0.28, "accuracy": 91.5, "val_loss": 0.31, "val_accuracy": 90.8},
+    "epoch_100": {"loss": 0.18, "accuracy": 94.8, "val_loss": 0.21, "val_accuracy": 94.2},
+    "epoch_150": {"loss": 0.08, "accuracy": 97.5, "val_loss": 0.11, "val_accuracy": 96.8}
+  },
+  "hyperparameters": {
+    "dropout_rate": 0.1,
+    "attention_dropout": 0.1,
+    "hidden_dropout": 0.1,
+    "layer_norm_eps": 1e-12,
+    "gradient_clip_norm": 1.0
+  },
+  "data_augmentation": {
+    "back_translation": true,
+    "synonym_replacement": true,
+    "random_insertion": false,
+    "random_swap": true,
+    "augmentation_ratio": 0.3
+  },
+  "evaluation_results": {
+    "positive_class": {"precision": 0.98, "recall": 0.96, "f1": 0.97, "support": 5000},
+    "negative_class": {"precision": 0.97, "recall": 0.95, "f1": 0.96, "support": 4800},
+    "neutral_class": {"precision": 0.96, "recall": 0.94, "f1": 0.95, "support": 4500}
+  },
+  "deployment_info": {
+    "model_size_mb": 438,
+    "inference_time_ms": 45,
+    "gpu_memory_mb": 2048,
+    "batch_inference_supported": true,
+    "quantization": "FP16",
+    "optimization": "ONNX Runtime"
+  },
+  "provenance": {
+    "created_by": "AI Research Team",
+    "created_at": "2025-11-21T12:00:00Z",
+    "git_commit": "a7f3c9d",
+    "training_duration_hours": 12.5,
+    "gpu_type": "NVIDIA A100",
+    "carbon_footprint_kg": 2.3
+  },
+  "license": "MIT",
+  "version": "2.1.0",
+  "checksum": "sha256:7f8a9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a"
+}

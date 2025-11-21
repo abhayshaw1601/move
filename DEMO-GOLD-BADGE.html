@@ -1,78 +1,9 @@
-import { renderDiffHtml } from "./diff";
-
-export interface VersionMetrics {
-  versionId: string;
-  timestampMs: number;
-  message: string;
-  metrics: Record<string, string>;
-  shardCount: number;
-  totalSizeBytes: number;
-  fileName: string;
-  oldText: string;
-  newText: string;
-}
-
-export interface AuditReportInput {
-  repoName: string;
-  trustScore: number;
-  versions: VersionMetrics[];
-}
-
-export function renderAuditReportHtml(input: AuditReportInput): string {
-  const { repoName, trustScore, versions } = input;
-
-  const lossSeries: { x: number; y: number }[] = [];
-  const accSeries: { x: number; y: number }[] = [];
-
-  versions.forEach((v, idx) => {
-    const loss = parseFloat(v.metrics["Loss"] ?? "NaN");
-    const acc = parseFloat(v.metrics["Accuracy"] ?? "NaN");
-    if (!Number.isNaN(loss)) lossSeries.push({ x: idx, y: loss });
-    if (!Number.isNaN(acc)) accSeries.push({ x: idx, y: acc });
-  });
-
-  // Get all unique metric keys
-  const allMetricKeys = new Set<string>();
-  versions.forEach(v => {
-    Object.keys(v.metrics).forEach(k => allMetricKeys.add(k));
-  });
-  const metricKeys = Array.from(allMetricKeys);
-
-  const rowsHtml = versions
-    .map((v) => {
-      const shortId = v.versionId.length > 20 ? `${v.versionId.substring(0, 10)}...${v.versionId.substring(v.versionId.length - 8)}` : v.versionId;
-      const metricsCells = metricKeys
-        .map(k => `<td>${v.metrics[k] || "N/A"}</td>`)
-        .join("");
-      return `<tr>
-        <td>${shortId}</td>
-        <td>${new Date(v.timestampMs).toLocaleString()}</td>
-        <td>${v.message}</td>
-        ${metricsCells}
-        <td>${v.shardCount}</td>
-        <td>${(v.totalSizeBytes / 1_000_000).toFixed(2)} MB</td>
-      </tr>`;
-    })
-    .join("\n");
-
-  const diffSections = versions
-    .map((v, idx) => `
-      <div class="diff-section">
-        <h3>Version ${idx + 1}: ${v.message}</h3>
-        ${renderDiffHtml(v.oldText, v.newText, v.fileName)}
-      </div>
-    `)
-    .join("\n");
-
-  const trustBadge = trustScore >= 100 ? "🥇 Gold" : trustScore >= 50 ? "🥈 Silver" : "🥉 Bronze";
-  const trustColor = trustScore >= 100 ? "#FFD700" : trustScore >= 50 ? "#C0C0C0" : "#CD7F32";
-
-  return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Audit Report - ${repoName}</title>
+    <title>Audit Report - Trust-Badge-Test-1763729647193</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       * { box-sizing: border-box; }
@@ -99,7 +30,7 @@ export function renderAuditReportHtml(input: AuditReportInput): string {
       .trust-badge {
         display: inline-block;
         padding: 0.5rem 1rem;
-        background: ${trustColor};
+        background: #FFD700;
         color: white;
         border-radius: 20px;
         font-weight: bold;
@@ -215,31 +146,31 @@ export function renderAuditReportHtml(input: AuditReportInput): string {
   </head>
   <body>
     <div class="container">
-      <h1>🔍 Audit Report: ${repoName}</h1>
-      <div class="trust-badge">Trust Score: ${trustScore} - ${trustBadge}</div>
+      <h1>🔍 Audit Report: Trust-Badge-Test-1763729647193</h1>
+      <div class="trust-badge">Trust Score: 100 - 🥇 Gold</div>
 
       <div class="stats">
         <div class="stat-card">
           <div class="stat-label">Total Versions</div>
-          <div class="stat-value">${versions.length}</div>
+          <div class="stat-value">1</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Total Size</div>
-          <div class="stat-value">${(versions.reduce((sum, v) => sum + v.totalSizeBytes, 0) / 1_000_000).toFixed(2)} MB</div>
+          <div class="stat-value">1000.00 MB</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Total Shards</div>
-          <div class="stat-value">${versions.reduce((sum, v) => sum + v.shardCount, 0)}</div>
+          <div class="stat-value">1</div>
         </div>
       </div>
 
-      ${lossSeries.length > 0 || accSeries.length > 0 ? `
+      
       <section>
         <h2>📊 Metrics Over Time</h2>
-        ${lossSeries.length > 0 ? '<div class="chart-container"><canvas id="lossChart"></canvas></div>' : ''}
-        ${accSeries.length > 0 ? '<div class="chart-container"><canvas id="accChart"></canvas></div>' : ''}
+        <div class="chart-container"><canvas id="lossChart"></canvas></div>
+        <div class="chart-container"><canvas id="accChart"></canvas></div>
       </section>
-      ` : '<div class="no-data">No metric data available</div>'}
+      
 
       <section>
         <h2>📋 Version History</h2>
@@ -249,23 +180,47 @@ export function renderAuditReportHtml(input: AuditReportInput): string {
               <th>Version ID</th>
               <th>Timestamp</th>
               <th>Message</th>
-              ${metricKeys.map(k => `<th>${k}</th>`).join('')}
+              <th>Accuracy</th><th>Loss</th>
               <th>Shards</th>
               <th>Size</th>
             </tr>
           </thead>
           <tbody>
-${rowsHtml}
+<tr>
+        <td>0x1216d676...6b26972e</td>
+        <td>1/1/1970, 5:45:25 AM</td>
+        <td>Trust test model</td>
+        <td>95.0</td><td>0.15</td>
+        <td>1</td>
+        <td>1000.00 MB</td>
+      </tr>
           </tbody>
         </table>
       </section>
 
-${diffSections}
+
+      <div class="diff-section">
+        <h3>Version 1: Trust test model</h3>
+        <section class="diff-section">
+  <h2>Code Changes: version_1.bin</h2>
+  <div class="file-diff">
+    <h3>version_1.bin</h3>
+    <pre class="diff-content">
+      <span class="line-number">1</span> <span class="removed">// Initial version</span>
+      <span class="line-number">2</span> <span class="added">// Version 1</span>
+      <span class="line-number">3</span> <span class="added">// Trust test model</span>
+      <span class="line-number">4</span> <span class="added">// Shards: 1, Size: 1.00 GB</span>
+      <span class="line-number">5</span> <span class="added">// Metrics: Accuracy=95.0, Loss=0.15</span>
+    </pre>
+  </div>
+</section>
+      </div>
+    
     </div>
 
     <script>
-      const lossData = ${JSON.stringify(lossSeries)};
-      const accData = ${JSON.stringify(accSeries)};
+      const lossData = [{"x":0,"y":0.15}];
+      const accData = [{"x":0,"y":95}];
 
       if (lossData.length > 0) {
         const lossCtx = document.getElementById('lossChart').getContext('2d');
@@ -324,5 +279,4 @@ ${diffSections}
       }
     </script>
   </body>
-</html>`;
-}
+</html>

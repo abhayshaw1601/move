@@ -1,0 +1,25 @@
+{
+  "model_name": "Llama-3-8B-Quantized",
+  "architecture": "transformer",
+  "quantization": "int8",
+  "parameters": "8B",
+  "training_data": {
+    "sources": ["CommonCrawl", "Wikipedia", "Books3", "ArXiv"],
+    "tokens": "15T",
+    "languages": ["en", "es", "fr", "de", "zh"]
+  },
+  "performance_metrics": {
+    "accuracy": 0.982,
+    "perplexity": 12.4,
+    "inference_speed_ms": 45,
+    "memory_footprint_gb": 4.2
+  },
+  "compliance": {
+    "eu_ai_act": "compliant",
+    "data_provenance": "verified",
+    "bias_testing": "passed"
+  },
+  "version": "1.0.0",
+  "created": "2024-01-15",
+  "license": "Apache-2.0"
+}
