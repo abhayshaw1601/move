@@ -32,7 +32,8 @@
 
 
 
-- [-] 2.3 Write property test for metrics event emission
+- [x] 2.3 Write property test for metrics event emission
+
 
 
   - **Property 2: Metrics Event Emission**
@@ -106,90 +107,113 @@
   - **Property 10: Access Purchase Event Emission**
   - **Validates: Requirements 4.4**
 
-- [ ] 6. Implement automated royalty distribution
-- [ ] 6.1 Add fork function with upstream_author tracking
+- [x] 6. Implement automated royalty distribution
+
+- [x] 6.1 Add fork function with upstream_author tracking
+
   - Create new repository with upstream_author set to original owner
   - Copy relevant metadata from original repository
   - _Requirements: 8.1_
 
-- [ ] 6.2 Modify buy_access to split payments
+- [x] 6.2 Modify buy_access to split payments
+
   - Calculate 95% for current owner, 5% for upstream_author
   - Handle zero address case (100% to owner)
   - Emit RoyaltyPaid event
   - _Requirements: 8.2, 8.3, 8.5_
 
-- [ ] 6.3 Write property test for upstream author recording
+- [x] 6.3 Write property test for upstream author recording
+
   - **Property 18: Fork Upstream Author Recording**
   - **Validates: Requirements 8.1**
 
-- [ ] 6.4 Write property test for royalty split
+- [x] 6.4 Write property test for royalty split
+
   - **Property 19: Royalty Payment Split**
   - **Validates: Requirements 8.2**
 
-- [ ] 6.5 Write property test for royalty event
+- [x] 6.5 Write property test for royalty event
+
   - **Property 20: Royalty Event Emission**
   - **Validates: Requirements 8.3**
 
-- [ ] 7. Implement TEE verification function
-- [ ] 7.1 Create verify_reproducibility function
+- [x] 7. Implement TEE verification function
+
+- [x] 7.1 Create verify_reproducibility function
+
   - Accept Ed25519 signature (vector<u8>)
   - Validate signature length (64 bytes)
   - Increment trust_score by 1
   - Emit ReproducibilityVerified event
   - _Requirements: 10.2, 10.3, 10.4_
 
-- [ ] 7.2 Write property test for trust score increment
+- [x] 7.2 Write property test for trust score increment
+
   - **Property 25: Trust Score Increment**
   - **Validates: Requirements 10.4**
 
-- [ ] 8. Implement dynamic NFT display metadata
-- [ ] 8.1 Create display initialization function
+- [x] 8. Implement dynamic NFT display metadata
+
+- [x] 8.1 Create display initialization function
+
   - Initialize Sui Display standard for Repository
   - Set dynamic image_url based on trust_score
   - Bronze (0-49), Silver (50-99), Gold (100+)
   - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 8.2 Write property tests for badge tier mapping
+- [x] 8.2 Write property tests for badge tier mapping
+
   - **Property 21: Badge Tier Mapping (Bronze)**
   - **Property 22: Badge Tier Mapping (Silver)**
   - **Property 23: Badge Tier Mapping (Gold)**
   - **Validates: Requirements 9.2, 9.3, 9.4**
 
-- [ ] 8.3 Write property test for dynamic badge updates
+- [x] 8.3 Write property test for dynamic badge updates
+
   - **Property 24: Dynamic Badge Updates**
   - **Validates: Requirements 9.5**
 
-- [ ] 9. Checkpoint - Ensure all smart contract tests pass
+- [x] 9. Checkpoint - Ensure all smart contract tests pass
+
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Set up CLI project structure
+- [x] 10. Set up CLI project structure
   - Initialize Node.js/TypeScript project
   - Install dependencies: @mysten/sui.js, @noble/ed25519, cli-table3, cli-progress, diff, highlight.js, chart.js
   - Create configuration file structure (~/.provenance/config.json)
   - Set up command parser (commander.js or yargs)
   - _Requirements: All_
 
-- [ ] 11. Implement Walrus integration utilities
-- [ ] 11.1 Create shard upload module
+- [x] 11. Implement Walrus integration utilities
+- [x] 11.1 Create shard upload module
+
+- [x] 11.1 Create shard upload module
+
   - Split files into 100MB chunks using streams
   - Upload shards in parallel (max 5 concurrent)
   - Calculate SHA-256 hash for each shard
   - Return array of blob IDs
   - _Requirements: 7.1, 7.2_
 
-- [ ] 11.2 Create shard download module
+- [x] 11.2 Create shard download module
   - Fetch shards concurrently from Walrus
   - Display per-shard progress bars
   - Verify SHA-256 hashes
   - Reassemble shards using streams
   - _Requirements: 7.3, 7.4_
 
-- [ ] 11.3 Write property test for shard reassembly
+- [-] 11.3 Write property test for shard reassembly
+- [x] 11.3 Write property test for shard reassembly
+
+
   - **Property 17: Shard Reassembly Round-Trip**
   - **Validates: Requirements 7.4**
 
-- [ ] 12. Implement enhanced commit command
-- [ ] 12.1 Create commit command handler
+- [x] 12. Implement enhanced commit command
+
+
+- [x] 12.1 Create commit command handler
+
   - Parse command-line flags (branch, message, accuracy, loss, epochs, f1-score, deps, files)
   - Prompt for missing metrics interactively
   - Split and upload files to Walrus
@@ -197,8 +221,10 @@
   - Display transaction confirmation
   - _Requirements: 1.1, 1.2, 1.5, 5.1, 7.1_
 
-- [ ] 13. Implement rich log command
-- [ ] 13.1 Create log command handler
+- [x] 13. Implement rich log command
+
+- [x] 13.1 Create log command handler
+
   - Query repository versions from blockchain
   - Format output as tree structure with icons
   - Display metrics, shards, and dependencies
@@ -206,32 +232,41 @@
   - Format percentage values with "%" suffix
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 13.2 Write property test for log display completeness
+- [x] 13.2 Write property test for log display completeness
+
   - **Property 3: Log Display Completeness**
   - **Validates: Requirements 2.3**
 
-- [ ] 13.3 Write property test for percentage formatting
+- [x] 13.3 Write property test for percentage formatting
+
   - **Property 4: Percentage Formatting**
   - **Validates: Requirements 2.4**
 
-- [ ] 13.4 Write property test for log filtering
+- [x] 13.4 Write property test for log filtering
+
   - **Property 5: Log Filtering Accuracy**
   - **Validates: Requirements 2.5**
 
-- [ ] 14. Implement visual diff generation
-- [ ] 14.1 Create diff computation module
+- [x] 14. Implement visual diff generation
+
+- [x] 14.1 Create diff computation module
+
   - Download current and parent version blobs from Walrus
   - Use diff library to compute line-by-line differences
   - Generate HTML with syntax highlighting (highlight.js)
   - Apply color coding (green for added, red for removed)
   - _Requirements: 3.3_
 
-- [ ] 14.2 Write property test for diff color coding
+- [x] 14.2 Write property test for diff color coding
+
+
   - **Property 6: Visual Diff Color Coding**
   - **Validates: Requirements 3.3**
 
-- [ ] 15. Implement HTML audit report generation
-- [ ] 15.1 Create audit report command handler
+- [x] 15. Implement HTML audit report generation
+
+- [x] 15.1 Create audit report command handler
+
   - Query all versions and metrics from blockchain
   - Generate Chart.js line graphs (loss curves, accuracy trends)
   - Create data table with all metrics
@@ -239,12 +274,14 @@
   - Write HTML file with professional layout
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [ ] 15.2 Write property test for metrics table completeness
+- [x] 15.2 Write property test for metrics table completeness
+
   - **Property 7: Metrics Table Completeness**
   - **Validates: Requirements 3.4**
 
-- [ ] 16. Implement storefront command
-- [ ] 16.1 Create storefront command handler
+- [x] 16. Implement storefront command
+- [x] 16.1 Create storefront command handler
+
   - Query all repositories from blockchain
   - Calculate total size from shards
   - Apply ANSI color codes based on trust score
@@ -252,11 +289,12 @@
   - Render ASCII table using cli-table3
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 16.2 Write property test for trust score colors
+- [x] 16.2 Write property test for trust score colors
+
   - **Property 14: Trust Score Color Coding**
   - **Validates: Requirements 6.2**
 
-- [ ] 16.3 Write property test for shard size calculation
+- [x] 16.3 Write property test for shard size calculation
   - **Property 15: Shard Size Calculation**
   - **Validates: Requirements 6.3**
 
