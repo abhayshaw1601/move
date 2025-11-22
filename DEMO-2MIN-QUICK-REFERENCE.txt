@@ -1,0 +1,147 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║              VERSIONFS 2-MINUTE DEMO - QUICK REFERENCE                    ║
+║                    Print this and keep handy!                            ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+BEFORE YOU START
+================
+1. Build: npm run build
+2. Set .env: $env:SUI_PRIVATE_KEY = "your_key"
+3. Ensure deployment-info.json exists (or pass -PackageId)
+
+RUN THE DEMO
+============
+Basic (Alice only):
+  .\demo-2min-pitch.ps1
+
+Full (with Bob's fork/purchase):
+  .\demo-2min-pitch.ps1 -BobPrivateKey "bob_key"
+
+With custom package:
+  .\demo-2min-pitch.ps1 -PackageId "0x..."
+
+TIMELINE (2 minutes)
+====================
+0:00-1:00  Pitch Introduction
+           - EU AI Act compliance problem
+           - VersionFS solution overview
+
+1:00-1:15  Setup: Sui Blockchain
+           - Spin up and scan
+           - Verify connection
+
+1:15-1:30  Create Repository
+           - Get REPO_ID and CAP_ID
+
+1:30-1:45  Commit Model (80% accuracy)
+           - "This is just liability"
+           - Highlight: model_shards vector
+
+1:45-2:00  TEE Verification
+           - verify_reproducibility
+           - "We run conformity assessment through TEE"
+
+2:00-2:15  Show Certificate
+           - Badge turns Gold
+           - "On-chain Compliance Certificate"
+
+2:15-2:30  Fork & Royalty Split
+           - Second wallet forks
+           - Purchase access
+           - Highlight: calculate_royalty_split
+           - 5% automatic royalty
+
+2:30+      Closing
+           - "VersionFS is a verifiable economy"
+
+KEY TALKING POINTS
+==================
+
+During Commit (1:30-1:45):
+  "Notice the model_shards vector. Even if we don't upload 10GB in the demo,
+   this shows we thought about real-world AI scaling."
+  "We're committing with 80% accuracy. This is just liability - we need to
+   prove it's real."
+
+During Verification (1:45-2:00):
+  "We run the conformity assessment through a TEE. The code verifies the
+   signature..."
+  "Article 15 demands proven accuracy. We use TEEs to cryptographically
+   verify performance metrics."
+
+During Certificate (2:00-2:15):
+  "The Badge turns Gold. This Gold Badge isn't just a PNG. It is an On-Chain
+   Compliance Certificate."
+  "We have verified the provenance and accuracy. This model is now legal to
+   deploy."
+
+During Fork/Purchase (2:15-2:30):
+  "User B just bought a forked version. Watch what happens."
+  "The contract automatically routes 5% of the sale back to the original
+   upstream author."
+  "We just solved open-source AI monetization."
+  "Highlight code: The calculate_royalty_split function."
+
+Closing (2:30+):
+  "Hugging Face is a centralized silo. VersionFS is a verifiable economy."
+  "We are building the provenance layer for the world's AI, ensuring that
+   if you build the truth, you get paid for it."
+
+CODE HIGHLIGHTS
+===============
+
+1. model_shards Vector
+   Location: src/index.ts, sources/version_fs.move
+   "Shows we thought about real-world AI scaling"
+
+2. verify_reproducibility Function
+   Location: src/verify.ts, sources/version_fs.move
+   "TEE verification of accuracy metrics"
+
+3. calculate_royalty_split Function
+   Location: sources/version_fs.move (lines 437-448)
+   "Automatic 5% royalty to upstream author"
+
+MANUAL COMMANDS (if script fails)
+=================================
+
+1. Create Repository:
+   npm run cli -- create-repository --name "EUCompliantModel" --price 0
+
+2. Commit Model:
+   npm run cli -- commit --repo <REPO_ID> --cap <CAP_ID> --branch main \
+     --message "EU Compliant AI Model v1.0" --file demo-model.bin \
+     --accuracy 80 --loss 0.15 --epochs 50 --f1-score 0.75
+
+3. Verify:
+   npm run cli -- verify --repo <REPO_ID>
+
+4. Show Certificate:
+   npm run cli -- certificate --repo <REPO_ID>
+
+5. Fork (Bob's wallet):
+   $env:SUI_PRIVATE_KEY = "bob_key"
+   npm run cli -- fork --from <REPO_ID> --name "BobsFork" --price 1000000000
+
+6. Purchase (Bob's wallet):
+   npm run cli -- pull --repo <FORKED_REPO_ID> --output ./downloaded
+
+TROUBLESHOOTING
+===============
+
+Issue: "SUI_PRIVATE_KEY not set"
+  Solution: $env:SUI_PRIVATE_KEY = "your_key"
+
+Issue: "PACKAGE_ID not found"
+  Solution: Pass -PackageId or ensure deployment-info.json exists
+
+Issue: "Could not extract REPO_ID"
+  Solution: Script will prompt - enter manually from output
+
+Issue: Build fails
+  Solution: npm install && npm run build
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                         END OF QUICK REFERENCE                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+

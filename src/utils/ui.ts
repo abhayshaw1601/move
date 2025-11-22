@@ -241,3 +241,79 @@ export async function executePhases(phases: string[], delayMs: number = 1000): P
     spinner.succeed(phase);
   }
 }
+/**
+
+ * Print VersionFS demo banner for pitch
+ */
+export function printVersionFSBanner(): void {
+  console.clear();
+  
+  const banner = `
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║              VERSION_FS: PROVABLY AUTHENTIC               ║
+║                                                           ║
+║         Built on Sui Blockchain + Walrus Storage          ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+  `;
+  
+  console.log(chalk.cyan.bold(banner));
+  console.log();
+}
+
+/**
+ * Print dramatic access denied message
+ */
+export function printAccessDenied(): void {
+  const deniedBox = boxen(
+    chalk.red.bold("❌ INTEGRITY CHECK FAILED\n\n") +
+    chalk.white("Hash mismatch detected.\n") +
+    chalk.white("Model has been modified or corrupted.\n\n") +
+    chalk.red.bold("ACCESS DENIED"),
+    {
+      padding: 2,
+      margin: 1,
+      borderStyle: "double",
+      borderColor: "red",
+      title: "VERIFICATION FAILED",
+      titleAlignment: "center"
+    }
+  );
+  
+  console.log(deniedBox);
+}
+
+/**
+ * Print trust score with color coding
+ */
+export function printTrustScore(score: number): void {
+  let level: string;
+  let color: "green" | "yellow" | "red";
+  
+  if (score >= 100) {
+    level = "GOLD [VERIFIED]";
+    color = "green";
+  } else if (score >= 50) {
+    level = "SILVER [VERIFIED]";
+    color = "yellow";
+  } else {
+    level = "BRONZE [UNVERIFIED]";
+    color = "red";
+  }
+  
+  const scoreBox = boxen(
+    chalk[color].bold(`TRUST SCORE: ${score}\n`) +
+    chalk[color].bold(`TRUST LEVEL: ${level}`),
+    {
+      padding: 1,
+      margin: 1,
+      borderStyle: "double",
+      borderColor: color,
+      title: "TRUST ORACLE",
+      titleAlignment: "center"
+    }
+  );
+  
+  console.log(scoreBox);
+}

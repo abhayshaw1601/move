@@ -211,11 +211,14 @@ async function openInBrowser(filePath) {
 }
 async function verifyRepository(options) {
     const { repoId, versionId, client, keypair, packageId, config } = options;
-    console.log(`🔐 Starting TEE-style verification for repository: ${repoId}`);
+    const boxen = require("boxen");
+    const chalk = require("chalk");
+    const figlet = require("figlet");
+    console.log(chalk.blue.bold("\n🔐 TEE VERIFICATION PROTOCOL\n"));
     // Use provided version ID or get latest from main branch
     let targetVersionId = versionId;
     if (!targetVersionId) {
-        console.log("📋 Getting latest version from main branch...");
+        console.log(chalk.gray("📋 Getting latest version from main branch..."));
         const repoObject = await client.getObject({
             id: repoId,
             options: { showContent: true }
@@ -230,28 +233,75 @@ async function verifyRepository(options) {
             throw new Error("No main branch found in repository");
         }
     }
-    console.log(`🔍 Verifying version: ${targetVersionId}`);
+    console.log(chalk.gray(`🔍 Verifying version: ${targetVersionId.substring(0, 16)}...\n`));
     // Generate verification signature
     const timestamp = Date.now();
-    console.log("🔑 Generating Ed25519 signature...");
+    console.log(chalk.cyan("🔑 Generating Ed25519 cryptographic signature..."));
     const { signature, payload } = await generateVerificationSignature(repoId, targetVersionId, timestamp);
-    console.log(`📝 Payload: ${payload}`);
-    console.log(`✍️  Signature: ${Buffer.from(signature).toString("hex").substring(0, 16)}...`);
+    console.log(chalk.gray(`   Payload: ${payload.substring(0, 32)}...`));
+    console.log(chalk.gray(`   Signature: ${Buffer.from(signature).toString("hex").substring(0, 32)}...\n`));
     // Submit verification transaction
     const txDigest = await submitVerifyReproducibilityTransaction(client, keypair, packageId, repoId, signature);
-    console.log(`📄 Transaction: ${txDigest}`);
-    console.log("⏳ Waiting for verification confirmation...");
+    console.log(chalk.cyan(`📄 Transaction submitted: ${txDigest.substring(0, 16)}...`));
+    console.log(chalk.yellow("⏳ Waiting for blockchain confirmation...\n"));
     // Poll for verification event
     const { success, newTrustScore } = await pollForReproducibilityVerifiedEvent(client, txDigest);
     if (!success) {
+        // Display dramatic failure
+        const failureBox = boxen(chalk.red.bold("❌ INTEGRITY CHECK FAILED\n\n") +
+            chalk.white("Hash mismatch detected.\n") +
+            chalk.white("Model has been modified or corrupted.\n\n") +
+            chalk.red.bold("ACCESS DENIED"), {
+            padding: 2,
+            margin: 1,
+            borderStyle: "double",
+            borderColor: "red",
+            title: "VERIFICATION FAILED",
+            titleAlignment: "center"
+        });
+        console.log(failureBox);
         throw new Error("Verification failed - no ReproducibilityVerified event received");
     }
-    console.log(`🎉 Verification successful! New trust score: ${newTrustScore}`);
+    // Determine trust level
+    let trustLevel;
+    let trustColor;
+    const score = newTrustScore || 0;
+    if (score >= 100) {
+        trustLevel = "GOLD [VERIFIED]";
+        trustColor = "green";
+    }
+    else if (score >= 50) {
+        trustLevel = "SILVER [VERIFIED]";
+        trustColor = "yellow";
+    }
+    else {
+        trustLevel = "BRONZE [UNVERIFIED]";
+        trustColor = "red";
+    }
+    // Display dramatic success
+    const successArt = figlet.textSync("VERIFIED", {
+        font: "Standard",
+        horizontalLayout: "default"
+    });
+    console.log(chalk[trustColor].bold(successArt));
+    const successBox = boxen(chalk[trustColor].bold(`TRUST SCORE: ${score}\n`) +
+        chalk[trustColor].bold(`TRUST LEVEL: ${trustLevel}\n\n`) +
+        chalk.white(`Transaction: ${txDigest.substring(0, 32)}...\n\n`) +
+        chalk.gray("Cryptographic proof of authenticity recorded on-chain.\n") +
+        chalk.gray("This model is provably authentic and unmodified."), {
+        padding: 2,
+        margin: 1,
+        borderStyle: "double",
+        borderColor: trustColor,
+        title: "VERIFICATION COMPLETE",
+        titleAlignment: "center"
+    });
+    console.log(successBox);
     // Generate audit report
-    console.log("📊 Generating audit report...");
+    console.log(chalk.cyan("\n📊 Generating comprehensive audit report..."));
     const auditReportPath = await generateAuditReport(client, repoId, newTrustScore || 0);
-    console.log(`📋 Audit report saved: ${auditReportPath}`);
-    console.log("🌐 Opening audit report in browser...");
+    console.log(chalk.gray(`📋 Audit report saved: ${auditReportPath}`));
+    console.log(chalk.cyan("🌐 Opening audit report in browser...\n"));
     await openInBrowser(auditReportPath);
     return {
         success: true,

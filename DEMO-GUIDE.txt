@@ -1,0 +1,220 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║                    VERSION_FS: 3-MINUTE DEMO GUIDE                        ║
+║                         "The Truth Engine for AI"                         ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+SETUP INSTRUCTIONS
+==================
+
+1. Open TWO terminal windows side-by-side:
+   - LEFT: Alice's terminal (the creator)
+   - RIGHT: Bob's terminal (the attacker)
+
+2. Build the project:
+   npm run build
+
+3. Set up environment variables in .env:
+   SUI_PRIVATE_KEY=<your-private-key>
+   PACKAGE_ID=<deployed-package-id>
+
+4. Create a repository first (run once):
+   npm run cli -- create-repository --name "AliceModel" --price 0
+
+
+DEMO SCRIPT (3 MINUTES)
+=======================
+
+TIME: 0:00-0:20 - THE HOOK
+--------------------------
+Visual: Show slide with "Real Model" vs "Backdoored Model"
+Audio: "We are entering the era of the 'Black Box' AI..."
+
+[Switch to terminals]
+
+
+TIME: 0:20-0:45 - THE SOLUTION
+-------------------------------
+Visual: Show ASCII banner in terminal
+Audio: "Introducing VersionFS..."
+
+[In Alice's terminal, run:]
+npm run cli -- certificate --repo <REPO_ID>
+
+[Show the VERSION_FS banner]
+
+
+TIME: 0:45-1:10 - ALICE COMMITS
+--------------------------------
+Audio: "Meet Alice. She just trained a breakthrough AI model..."
+
+[In Alice's terminal:]
+
+1. Show the model file:
+   dir model.bin
+
+2. Commit to VersionFS:
+   npm run cli -- commit --repo <REPO_ID> --cap <CAP_ID> --branch main --message "Breakthrough AI model v1.0" --file model.bin --accuracy 98.5 --loss 0.02 --epochs 100 --f1-score 0.92
+
+[Wait for transaction to complete]
+
+
+TIME: 1:10-1:40 - VERIFICATION
+-------------------------------
+Audio: "But is it real? Our system acts as a Trust Oracle..."
+
+[In Alice's terminal:]
+
+1. Show the certificate:
+   npm run cli -- certificate --repo <REPO_ID>
+
+[Point to the certificate output]
+
+2. Run verification:
+   npm run cli -- verify --repo <REPO_ID>
+
+[Point to output: "TRUST SCORE: GOLD [VERIFIED]"]
+
+
+TIME: 1:40-2:00 - BOB FORKS
+----------------------------
+Audio: "Now, meet Bob. Bob wants to take credit for Alice's work..."
+
+[In Bob's terminal:]
+
+npm run cli -- fork --from <ALICE_REPO_ID> --name "BobsModel" --price 1000000000
+
+[Wait for transaction]
+
+
+TIME: 2:00-2:25 - UPSTREAM AUTHOR LOCKED
+-----------------------------------------
+Audio: "Bob now has his own repo. But look at the metadata..."
+
+[In Bob's terminal:]
+
+npm run cli -- certificate --repo <BOB_REPO_ID>
+
+[Scroll to show upstream_author field]
+[Point to: "upstream_author: 0x[Alice_Address]"]
+
+Audio: "Bob cannot erase her. Royalties automatically route back to Alice."
+
+
+TIME: 2:25-2:45 - DEEPFAKE TEST
+--------------------------------
+Audio: "And finally, the Deepfake Test. Bob tries to upload a poisoned version..."
+
+[In Bob's terminal:]
+
+1. Create poisoned model:
+   echo "POISONED_MODEL" > model-poisoned.bin
+
+2. Try to verify:
+   npm run cli -- verify --repo <BOB_REPO_ID>
+
+[Show the big red "ACCESS DENIED" box]
+
+Audio: "The Oracle detects the hash mismatch immediately. Access Denied."
+
+
+TIME: 2:45-3:00 - CLOSING
+--------------------------
+Visual: Show final slide with GitHub link
+Audio: "In an era of AI theft, VersionFS is the standard for Provable Authenticity..."
+
+
+COMMAND REFERENCE
+=================
+
+Create Repository:
+  npm run cli -- create-repository --name <name> --price <mist>
+
+Commit Model:
+  npm run cli -- commit --repo <id> --cap <id> --branch main --message <msg> --file <path> --accuracy <val> --loss <val> --epochs <val> --f1-score <val>
+
+Fork Repository:
+  npm run cli -- fork --from <id> --name <name> --price <mist>
+
+Show Certificate:
+  npm run cli -- certificate --repo <id>
+
+Verify Model:
+  npm run cli -- verify --repo <id>
+
+View Marketplace:
+  npm run cli -- storefront
+
+View History:
+  npm run cli -- log --repo-id <id>
+
+
+VISUAL HIGHLIGHTS
+=================
+
+✓ ASCII Art Banner: "VERSION_FS: PROVABLY AUTHENTIC"
+✓ Color-coded Trust Scores:
+  - GOLD (≥100): Green
+  - SILVER (50-99): Yellow
+  - BRONZE (<50): Red
+✓ Boxed Outputs: Certificate, Verification, Errors
+✓ Dramatic "ACCESS DENIED" for failed verification
+✓ Upstream Author Warning Box (yellow, double border)
+
+
+TROUBLESHOOTING
+===============
+
+If commands fail:
+1. Check .env file has correct SUI_PRIVATE_KEY and PACKAGE_ID
+2. Ensure you have SUI tokens for gas
+3. Verify repository IDs are correct
+4. Run: npm run build
+
+If verification fails:
+1. Make sure you committed a version first
+2. Check that the repository has a main branch
+3. Verify the file hasn't been modified
+
+For demo practice:
+1. Run through the script 2-3 times
+2. Have repository IDs ready in a text file
+3. Test both terminals work independently
+4. Time yourself to stay under 3 minutes
+
+
+TIPS FOR SUCCESS
+================
+
+1. Keep terminal font size large (18-20pt) for screen recording
+2. Use high contrast color scheme
+3. Clear terminals before starting: cls (Windows) or clear (Linux/Mac)
+4. Have all repository IDs copied and ready to paste
+5. Practice the narration timing
+6. Keep mouse movements minimal and deliberate
+7. Pause briefly after each dramatic reveal (trust score, access denied)
+8. End with the GitHub link visible on screen
+
+
+BACKUP PLAN
+===========
+
+If blockchain is slow:
+- Have pre-recorded terminal output ready
+- Use the demo scripts (demo-alice.ps1, demo-bob.ps1) for simulation
+
+If verification fails:
+- Skip to showing the certificate instead
+- Emphasize the upstream_author lock
+
+If time runs short:
+- Skip the storefront command
+- Focus on: commit → certificate → fork → upstream lock → access denied
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+Good luck with your pitch! 🚀
+
+═══════════════════════════════════════════════════════════════════════════

@@ -60,6 +60,35 @@ program
     .version("0.1.0")
     .option("-c, --config <path>", "Configuration file path (default: ~/.provenance/config.json)");
 program
+    .command("create-repository")
+    .description("Create a new AI model repository on blockchain")
+    .requiredOption("--name <name>", "Repository name")
+    .option("--price <mist>", "Price in MIST (0 for free)", "0")
+    .action(async (opts) => {
+    const globalOpts = program.opts();
+    const cfg = await (0, config_1.loadConfig)(globalOpts.config);
+    const options = opts;
+    const createMod = await Promise.resolve().then(() => __importStar(require("./commands/create-repo")));
+    const { executeCreateRepo } = createMod;
+    const pkg = (0, sui_1.getPackageId)();
+    const client = (0, sui_1.getSuiClient)(cfg);
+    const keypair = (0, sui_1.getKeypairFromEnv)();
+    try {
+        await executeCreateRepo({
+            name: options.name,
+            price: options.price,
+            client,
+            keypair,
+            packageId: pkg,
+            config: cfg
+        });
+    }
+    catch (error) {
+        console.error(`❌ Repository creation failed: ${error}`);
+        process.exit(1);
+    }
+});
+program
     .command("commit")
     .description("Commit AI model version with metrics to blockchain")
     .requiredOption("--repo <id>", "Repository object ID")
@@ -333,7 +362,7 @@ program
     const client = (0, sui_1.getSuiClient)(cfg);
     const keypair = (0, sui_1.getKeypairFromEnv)();
     try {
-        const result = await verifyRepository({
+        await verifyRepository({
             repoId: options.repo,
             versionId: options.version,
             client,
@@ -341,15 +370,67 @@ program
             packageId: pkg,
             config: cfg
         });
-        console.log("\n✅ Verification Complete!");
-        console.log(`   Transaction: ${result.transactionDigest}`);
-        console.log(`   New Trust Score: ${result.newTrustScore}`);
-        if (result.auditReportPath) {
-            console.log(`   Audit Report: ${result.auditReportPath}`);
-        }
     }
     catch (error) {
         console.error(`❌ Verification failed: ${error}`);
+        process.exit(1);
+    }
+});
+program
+    .command("fork")
+    .description("Fork a repository with upstream author attribution")
+    .requiredOption("--from <id>", "Original repository object ID to fork")
+    .requiredOption("--name <name>", "Name for the forked repository")
+    .option("--price <mist>", "Price in MIST for the forked repo (0 for free)", "0")
+    .action(async (opts) => {
+    const globalOpts = program.opts();
+    const cfg = await (0, config_1.loadConfig)(globalOpts.config);
+    const options = opts;
+    const forkMod = await Promise.resolve().then(() => __importStar(require("./commands/fork")));
+    const { executeFork } = forkMod;
+    const pkg = (0, sui_1.getPackageId)();
+    const client = (0, sui_1.getSuiClient)(cfg);
+    const keypair = (0, sui_1.getKeypairFromEnv)();
+    try {
+        await executeFork({
+            originalRepoId: options.from,
+            newName: options.name,
+            price: options.price,
+            client,
+            keypair,
+            packageId: pkg,
+            config: cfg
+        });
+    }
+    catch (error) {
+        console.error(`❌ Fork failed: ${error}`);
+        process.exit(1);
+    }
+});
+program
+    .command("certificate")
+    .description("Display cryptographic provenance certificate")
+    .requiredOption("--repo <id>", "Repository object ID")
+    .option("--version <id>", "Specific version ID (optional)")
+    .action(async (opts) => {
+    const globalOpts = program.opts();
+    const cfg = await (0, config_1.loadConfig)(globalOpts.config);
+    const options = opts;
+    const certMod = await Promise.resolve().then(() => __importStar(require("./commands/certificate")));
+    const { executeCertificate } = certMod;
+    const pkg = (0, sui_1.getPackageId)();
+    const client = (0, sui_1.getSuiClient)(cfg);
+    try {
+        await executeCertificate({
+            repoId: options.repo,
+            versionId: options.version,
+            client,
+            packageId: pkg,
+            config: cfg
+        });
+    }
+    catch (error) {
+        console.error(`❌ Certificate generation failed: ${error}`);
         process.exit(1);
     }
 });

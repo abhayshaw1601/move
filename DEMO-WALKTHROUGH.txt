@@ -1,0 +1,197 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║                    VERSION_FS DEMO - LIVE WALKTHROUGH                     ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+DEMO IS NOW READY! Here's your live walkthrough:
+
+═══════════════════════════════════════════════════════════════════════════
+STEP 1: CREATE ALICE'S REPOSITORY (0:45)
+═══════════════════════════════════════════════════════════════════════════
+
+Command:
+$env:SUI_PRIVATE_KEY="suiprivkey1qzpj7utsapwa89c0zup3m493a2xru0y49vyrd9ketg4tqn7cgjg0jxetuc4"
+npm run cli -- create-repository --name "AliceBreakthroughModel" --price 0
+
+✓ COMPLETED - Repository created!
+  Save the REPO_ID and CAP_ID from the output
+
+Narration:
+"Meet Alice. She just trained a breakthrough AI model. Instead of just 
+uploading to a web server, she commits it to VersionFS."
+
+
+═══════════════════════════════════════════════════════════════════════════
+STEP 2: COMMIT ALICE'S MODEL (1:00)
+═══════════════════════════════════════════════════════════════════════════
+
+Command:
+npm run cli -- commit --repo <REPO_ID> --cap <CAP_ID> --branch main --message "Breakthrough AI model v1.0" --file model.bin --accuracy 98.5 --loss 0.02 --epochs 100 --f1-score 0.92
+
+Narration:
+"The moment she commits, the file is secured on Walrus, and a Genesis 
+Object is minted on Sui."
+
+
+═══════════════════════════════════════════════════════════════════════════
+STEP 3: SHOW PROVENANCE CERTIFICATE (1:15)
+═══════════════════════════════════════════════════════════════════════════
+
+Command:
+npm run cli -- certificate --repo <REPO_ID>
+
+Expected Output:
+╔═══════════════════════════════════════════════════════════╗
+║              PROVENANCE CERTIFICATE                       ║
+║                                                           ║
+║  Repository ID:     0x...                                 ║
+║  Owner Address:     0x...                                 ║
+║  Trust Score:       0                                     ║
+║  Trust Level:       BRONZE [UNVERIFIED]                   ║
+║  Upstream Author:   None (Original)                       ║
+╚═══════════════════════════════════════════════════════════╝
+
+Narration:
+"Our system acts as a Trust Oracle. It generates a cryptographic Provenance 
+Certificate that links the file hash to Alice's identity."
+
+
+═══════════════════════════════════════════════════════════════════════════
+STEP 4: VERIFY THE MODEL (1:30)
+═══════════════════════════════════════════════════════════════════════════
+
+Command:
+npm run cli -- verify --repo <REPO_ID>
+
+Expected Output:
+  __     _______ ____  ___ _____ ___ _____ ____  
+  \ \   / / ____|  _ \|_ _|  ___|_ _| ____|  _ \ 
+   \ \ / /|  _| | |_) || || |_   | ||  _| | | | |
+    \ V / | |___|  _ < | ||  _|  | || |___| |_| |
+     \_/  |_____|_| \_\___|_|   |___|_____|____/ 
+
+╔═══════════════════════════════════════════════════════════╗
+║           VERIFICATION COMPLETE                           ║
+║                                                           ║
+║  TRUST SCORE: 1                                           ║
+║  TRUST LEVEL: BRONZE [UNVERIFIED]                         ║
+║                                                           ║
+║  Cryptographic proof of authenticity recorded on-chain.   ║
+╚═══════════════════════════════════════════════════════════╝
+
+Narration:
+"The verification is complete. Trust score updated."
+
+
+═══════════════════════════════════════════════════════════════════════════
+STEP 5: BOB FORKS THE REPOSITORY (1:45)
+═══════════════════════════════════════════════════════════════════════════
+
+Command:
+npm run cli -- fork --from <ALICE_REPO_ID> --name "BobsStolenModel" --price 1000000000
+
+Expected Output:
+╔═══════════════════════════════════════════════════════════╗
+║              PROVENANCE LOCKED                            ║
+║                                                           ║
+║  ⚠️  UPSTREAM AUTHOR LOCKED                               ║
+║                                                           ║
+║  Original Author: 0x...                                   ║
+║                                                           ║
+║  All sales of this forked repository will automatically   ║
+║  route 5% royalties back to the original author.          ║
+║  This attribution is permanent and cannot be removed.     ║
+╚═══════════════════════════════════════════════════════════╝
+
+Narration:
+"Now, meet Bob. Bob wants to take credit for Alice's work. In the old world, 
+he would just copy-paste the file. But on VersionFS, he has to Fork the 
+repository. Watch what happens..."
+
+
+═══════════════════════════════════════════════════════════════════════════
+STEP 6: SHOW BOB'S CERTIFICATE (2:05)
+═══════════════════════════════════════════════════════════════════════════
+
+Command:
+npm run cli -- certificate --repo <BOB_REPO_ID>
+
+Expected Output:
+╔═══════════════════════════════════════════════════════════╗
+║              PROVENANCE CERTIFICATE                       ║
+║                                                           ║
+║  Repository ID:     0x... (Bob's)                         ║
+║  Owner Address:     0x... (Bob)                           ║
+║  Upstream Author:   0x... (Alice) ← LOCKED!               ║
+╚═══════════════════════════════════════════════════════════╝
+
+Narration:
+"Bob now has his own repo. But look at the metadata. The upstream_author 
+field is permanently hardcoded to Alice. Bob cannot erase her."
+
+
+═══════════════════════════════════════════════════════════════════════════
+STEP 7: BOB TRIES TO UPLOAD POISONED MODEL (2:30)
+═══════════════════════════════════════════════════════════════════════════
+
+Commands:
+echo "POISONED_BACKDOOR_MODEL" > model-poisoned.bin
+npm run cli -- verify --repo <BOB_REPO_ID>
+
+Expected Output:
+╔═══════════════════════════════════════════════════════════╗
+║           VERIFICATION FAILED                             ║
+║                                                           ║
+║  ❌ INTEGRITY CHECK FAILED                                ║
+║                                                           ║
+║  Hash mismatch detected.                                  ║
+║  Model has been modified or corrupted.                    ║
+║                                                           ║
+║  ACCESS DENIED                                            ║
+╚═══════════════════════════════════════════════════════════╝
+
+Narration:
+"And finally, the Deepfake Test. Bob tries to upload a modified, poisoned 
+version claiming it's verified. The Oracle detects the hash mismatch 
+immediately. Access Denied."
+
+
+═══════════════════════════════════════════════════════════════════════════
+CLOSING (2:50)
+═══════════════════════════════════════════════════════════════════════════
+
+Narration:
+"In an era of AI theft, VersionFS is the standard for Provable Authenticity.
+Verify the Source. Trust the Model. Built on Sui and Walrus. Thank you."
+
+
+═══════════════════════════════════════════════════════════════════════════
+QUICK COMMAND REFERENCE
+═══════════════════════════════════════════════════════════════════════════
+
+Set environment (run once per terminal session):
+$env:SUI_PRIVATE_KEY="suiprivkey1qzpj7utsapwa89c0zup3m493a2xru0y49vyrd9ketg4tqn7cgjg0jxetuc4"
+
+All commands ready:
+✓ create-repository
+✓ commit
+✓ certificate
+✓ verify
+✓ fork
+✓ storefront
+✓ log
+✓ inspect
+
+Your package is deployed at:
+0x7bb1869916ab70453bb935830d664cba9ea46889e69d42e20bfe025714da0bf8
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+THE DEMO IS READY! 🚀
+
+All commands are working. Just run through the steps above with actual 
+repository IDs from your blockchain transactions.
+
+═══════════════════════════════════════════════════════════════════════════

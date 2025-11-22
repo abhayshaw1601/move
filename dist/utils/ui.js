@@ -18,6 +18,9 @@ exports.printRepoStats = printRepoStats;
 exports.printVerificationStatus = printVerificationStatus;
 exports.printCommandComplete = printCommandComplete;
 exports.executePhases = executePhases;
+exports.printVersionFSBanner = printVersionFSBanner;
+exports.printAccessDenied = printAccessDenied;
+exports.printTrustScore = printTrustScore;
 const figlet_1 = __importDefault(require("figlet"));
 const boxen_1 = __importDefault(require("boxen"));
 const ora_1 = __importDefault(require("ora"));
@@ -218,4 +221,68 @@ async function executePhases(phases, delayMs = 1000) {
         await new Promise(resolve => setTimeout(resolve, delayMs));
         spinner.succeed(phase);
     }
+}
+/**
+
+ * Print VersionFS demo banner for pitch
+ */
+function printVersionFSBanner() {
+    console.clear();
+    const banner = `
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║              VERSION_FS: PROVABLY AUTHENTIC               ║
+║                                                           ║
+║         Built on Sui Blockchain + Walrus Storage          ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+  `;
+    console.log(chalk_1.default.cyan.bold(banner));
+    console.log();
+}
+/**
+ * Print dramatic access denied message
+ */
+function printAccessDenied() {
+    const deniedBox = (0, boxen_1.default)(chalk_1.default.red.bold("❌ INTEGRITY CHECK FAILED\n\n") +
+        chalk_1.default.white("Hash mismatch detected.\n") +
+        chalk_1.default.white("Model has been modified or corrupted.\n\n") +
+        chalk_1.default.red.bold("ACCESS DENIED"), {
+        padding: 2,
+        margin: 1,
+        borderStyle: "double",
+        borderColor: "red",
+        title: "VERIFICATION FAILED",
+        titleAlignment: "center"
+    });
+    console.log(deniedBox);
+}
+/**
+ * Print trust score with color coding
+ */
+function printTrustScore(score) {
+    let level;
+    let color;
+    if (score >= 100) {
+        level = "GOLD [VERIFIED]";
+        color = "green";
+    }
+    else if (score >= 50) {
+        level = "SILVER [VERIFIED]";
+        color = "yellow";
+    }
+    else {
+        level = "BRONZE [UNVERIFIED]";
+        color = "red";
+    }
+    const scoreBox = (0, boxen_1.default)(chalk_1.default[color].bold(`TRUST SCORE: ${score}\n`) +
+        chalk_1.default[color].bold(`TRUST LEVEL: ${level}`), {
+        padding: 1,
+        margin: 1,
+        borderStyle: "double",
+        borderColor: color,
+        title: "TRUST ORACLE",
+        titleAlignment: "center"
+    });
+    console.log(scoreBox);
 }

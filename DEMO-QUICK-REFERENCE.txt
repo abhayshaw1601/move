@@ -1,0 +1,123 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                    VERSIONFS DEMO - QUICK REFERENCE                       ║
+║                         Print this and keep handy!                        ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+BEFORE YOU START
+================
+1. Build: npm run build
+2. Set .env: SUI_PRIVATE_KEY, PACKAGE_ID
+3. Create repo: npm run cli -- create-repository --name "AliceModel" --price 0
+4. Save REPO_ID and CAP_ID from output
+5. Open two terminals side-by-side
+
+
+ALICE'S COMMANDS (Left Terminal)
+=================================
+
+[1] Commit Model (0:45-1:10)
+npm run cli -- commit --repo <REPO_ID> --cap <CAP_ID> --branch main --message "Breakthrough AI model" --file model.bin --accuracy 98.5 --loss 0.02 --epochs 100 --f1-score 0.92
+
+[2] Show Certificate (1:10-1:25)
+npm run cli -- certificate --repo <REPO_ID>
+
+[3] Verify Model (1:25-1:40)
+npm run cli -- verify --repo <REPO_ID>
+
+
+BOB'S COMMANDS (Right Terminal)
+================================
+
+[1] Fork Repository (1:40-2:00)
+npm run cli -- fork --from <ALICE_REPO_ID> --name "BobsStolenModel" --price 1000000000
+
+[2] Show Certificate (2:00-2:25)
+npm run cli -- certificate --repo <BOB_REPO_ID>
+
+[3] Create Poisoned Model (2:25-2:35)
+echo "POISONED_MODEL" > model-poisoned.bin
+
+[4] Attempt Verification (2:35-2:45)
+npm run cli -- verify --repo <BOB_REPO_ID>
+
+
+KEY TALKING POINTS
+==================
+
+0:00 - "We are entering the era of the 'Black Box' AI"
+0:20 - "Storage that proves truth"
+0:45 - "Alice commits to VersionFS"
+1:10 - "Trust Oracle generates cryptographic certificate"
+1:40 - "Bob has to Fork the repository"
+2:00 - "upstream_author field permanently hardcoded to Alice"
+2:25 - "Oracle detects hash mismatch immediately"
+2:45 - "VersionFS is the standard for Provable Authenticity"
+
+
+VISUAL HIGHLIGHTS TO POINT OUT
+===============================
+
+✓ VERSION_FS ASCII banner
+✓ Certificate box with trust score
+✓ "TRUST SCORE: GOLD [VERIFIED]" in green
+✓ Yellow warning box: "UPSTREAM AUTHOR LOCKED"
+✓ upstream_author field in certificate
+✓ Red "ACCESS DENIED" box for failed verification
+
+
+TIMING CHECKPOINTS
+==================
+
+0:20 - Should be showing terminal
+0:45 - Alice starts committing
+1:10 - Certificate displayed
+1:40 - Bob starts forking
+2:00 - Upstream author revealed
+2:25 - Poisoned model created
+2:45 - Closing slide
+
+
+EMERGENCY BACKUP
+================
+
+If blockchain is slow:
+- Use demo-automated.ps1 for simulation
+- Have screenshots ready
+
+If command fails:
+- Show certificate instead
+- Emphasize the concept over execution
+
+If time runs out:
+- Skip to upstream author lock
+- Show ACCESS DENIED
+- Jump to closing
+
+
+REPOSITORY IDs (Fill in before demo)
+=====================================
+
+ALICE_REPO_ID: _______________________________________
+
+ALICE_CAP_ID:  _______________________________________
+
+BOB_REPO_ID:   _______________________________________
+
+
+CHECKLIST BEFORE RECORDING
+===========================
+
+□ npm run build completed
+□ .env file configured
+□ Repository created and IDs saved
+□ model.bin file exists
+□ Both terminals open and sized correctly
+□ Font size large enough (18-20pt)
+□ High contrast color scheme
+□ Screen recording software ready
+□ Narration script printed
+□ Timer ready (3 minutes)
+□ GitHub link ready for final slide
+
+
+═══════════════════════════════════════════════════════════════════════════

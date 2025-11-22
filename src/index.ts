@@ -30,6 +30,38 @@ program
   .option("-c, --config <path>", "Configuration file path (default: ~/.provenance/config.json)");
 
 program
+  .command("create-repository")
+  .description("Create a new AI model repository on blockchain")
+  .requiredOption("--name <name>", "Repository name")
+  .option("--price <mist>", "Price in MIST (0 for free)", "0")
+  .action(async (opts) => {
+    const globalOpts = program.opts();
+    const cfg = await loadConfig(globalOpts.config);
+    const options = opts as { name: string; price: string };
+
+    const createMod = await import("./commands/create-repo");
+    const { executeCreateRepo } = createMod;
+
+    const pkg = getPackageId();
+    const client = getSuiClient(cfg);
+    const keypair = getKeypairFromEnv();
+
+    try {
+      await executeCreateRepo({
+        name: options.name,
+        price: options.price,
+        client,
+        keypair,
+        packageId: pkg,
+        config: cfg
+      });
+    } catch (error) {
+      console.error(`❌ Repository creation failed: ${error}`);
+      process.exit(1);
+    }
+  });
+
+program
   .command("commit")
   .description("Commit AI model version with metrics to blockchain")
   .requiredOption("--repo <id>", "Repository object ID")
@@ -365,7 +397,7 @@ program
     const keypair = getKeypairFromEnv();
 
     try {
-      const result = await verifyRepository({
+      await verifyRepository({
         repoId: options.repo,
         versionId: options.version,
         client,
@@ -373,15 +405,72 @@ program
         packageId: pkg,
         config: cfg
       });
-
-      console.log("\n✅ Verification Complete!");
-      console.log(`   Transaction: ${result.transactionDigest}`);
-      console.log(`   New Trust Score: ${result.newTrustScore}`);
-      if (result.auditReportPath) {
-        console.log(`   Audit Report: ${result.auditReportPath}`);
-      }
     } catch (error) {
       console.error(`❌ Verification failed: ${error}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command("fork")
+  .description("Fork a repository with upstream author attribution")
+  .requiredOption("--from <id>", "Original repository object ID to fork")
+  .requiredOption("--name <name>", "Name for the forked repository")
+  .option("--price <mist>", "Price in MIST for the forked repo (0 for free)", "0")
+  .action(async (opts) => {
+    const globalOpts = program.opts();
+    const cfg = await loadConfig(globalOpts.config);
+    const options = opts as { from: string; name: string; price: string };
+
+    const forkMod = await import("./commands/fork");
+    const { executeFork } = forkMod;
+
+    const pkg = getPackageId();
+    const client = getSuiClient(cfg);
+    const keypair = getKeypairFromEnv();
+
+    try {
+      await executeFork({
+        originalRepoId: options.from,
+        newName: options.name,
+        price: options.price,
+        client,
+        keypair,
+        packageId: pkg,
+        config: cfg
+      });
+    } catch (error) {
+      console.error(`❌ Fork failed: ${error}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command("certificate")
+  .description("Display cryptographic provenance certificate")
+  .requiredOption("--repo <id>", "Repository object ID")
+  .option("--version <id>", "Specific version ID (optional)")
+  .action(async (opts) => {
+    const globalOpts = program.opts();
+    const cfg = await loadConfig(globalOpts.config);
+    const options = opts as { repo: string; version?: string };
+
+    const certMod = await import("./commands/certificate");
+    const { executeCertificate } = certMod;
+
+    const pkg = getPackageId();
+    const client = getSuiClient(cfg);
+
+    try {
+      await executeCertificate({
+        repoId: options.repo,
+        versionId: options.version,
+        client,
+        packageId: pkg,
+        config: cfg
+      });
+    } catch (error) {
+      console.error(`❌ Certificate generation failed: ${error}`);
       process.exit(1);
     }
   });
