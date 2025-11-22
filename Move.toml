@@ -5,3 +5,4 @@ edition = "2024.beta"
 
 [addresses]
 version_fs = "0x0"
+ghostcontext = "0x0"

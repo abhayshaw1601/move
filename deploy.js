@@ -81,7 +81,7 @@ var fs = __importStar(require("fs"));
 var path = __importStar(require("path"));
 // ==================== Configuration ====================
 var NETWORK = 'testnet';
-var PRIVATE_KEY = 'suiprivkey1qzpj7utsapwa89c0zup3m493a2xru0y49vyrd9ketg4tqn7cgjg0jxetuc4';
+var PRIVATE_KEY = 'suiprivkey1qzchlgwk00favfekjusx0x6ymvn6a8uslkjv2npl20zf3cs2mpau54shr2k';
 // ==================== Main Deployment Function ====================
 function deployContract() {
     return __awaiter(this, void 0, void 0, function () {
@@ -103,7 +103,7 @@ function deployContract() {
                         keypair = ed25519_1.Ed25519Keypair.fromSecretKey(secretKey);
                         address = keypair.toSuiAddress();
                         console.log("\uD83D\uDCCD Deployer Address: ".concat(address));
-                        expectedAddress = '0xaedc8923f06ab9e677377bfbebc527d806dd59a6f987555b6b192632d7f750cb';
+                        expectedAddress = '0x3819caed273797d0575aca93f4ab9ed95d80f93e85281affcf0d74f9aab45811';
                         if (address === expectedAddress) {
                             console.log("\u2705 Address verified!\n");
                         }

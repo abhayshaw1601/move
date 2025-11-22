@@ -1,14 +1,8 @@
 {
   "network": "testnet",
-  "packageId": "0xd8d7e4ac6cddf9d7c182f9163d45918afd6c9581a0605f07f1e6f31850bd448d",
-  "deployerAddress": "0xaedc8923f06ab9e677377bfbebc527d806dd59a6f987555b6b192632d7f750cb",
-  "transactionDigest": "EAeLybL7uGueBYhUsQZQ81eLaEbmuAgkh7RPEWwWNy7B",
-  "deployedAt": "2025-11-20T15:11:48.988Z",
-  "explorerUrl": "https://suiexplorer.com/txblock/EAeLybL7uGueBYhUsQZQ81eLaEbmuAgkh7RPEWwWNy7B?network=testnet",
-  "repositories": {
-    "free": "0xbbb62e36d312b5d3191c2e828e071e64f859fc36507f01f84e4ac443fcf46121",
-    "paid": "0x87b3d03e330652bfe61386042c0cb789a439fdb8a4159dbea14b216ceba81028",
-    "gold": "0x87b3d03e330652bfe61386042c0cb789a439fdb8a4159dbea14b216ceba81028",
-    "forked": "0x771078fdad17362a452ecf02a3a479e2cc829cfad1be447ddc319f952b81fbf6"
-  }
+  "packageId": "0x7bb1869916ab70453bb935830d664cba9ea46889e69d42e20bfe025714da0bf8",
+  "deployerAddress": "0x3819caed273797d0575aca93f4ab9ed95d80f93e85281affcf0d74f9aab45811",
+  "transactionDigest": "6p3upN1qetcWNheC3LStH84DWdVCvnptqXFb8gFrd2eK",
+  "deployedAt": "2025-11-21T18:47:35.381Z",
+  "explorerUrl": "https://suiexplorer.com/txblock/6p3upN1qetcWNheC3LStH84DWdVCvnptqXFb8gFrd2eK?network=testnet"
 }
